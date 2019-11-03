@@ -20,11 +20,10 @@ body {
     .col-6 .display-4 {
         font-size: 1.5rem;
     }
-}
-@media (max-width: 576px) {
+
     .jumbotron .display-2 {
         font-size: 50px;
-        margin-top: 40px;
+        margin-top: 30px;
     }
 }
 .navbar {
