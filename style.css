@@ -21,6 +21,12 @@ body {
         font-size: 1.5rem;
     }
 }
+@media (max-width: 576px) {
+    .jumbotron .display-2 {
+        font-size: 50px;
+        margin-top: 40px;
+    }
+}
 .navbar {
     background-color: rgb(204, 41, 41);
 }
