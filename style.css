@@ -9,8 +9,15 @@
 
     }
 }
-@media(min-width: 576px) {
-    div .display-4 {
-        font-size: 3em;
+@media(max-width: 576px) {
+    .col-6 .display-4 {
+        font-size: 2rem;
     }
+}
+i {
+    font-size: 30px;
+    color: white;
+}
+.jumbotron {
+    background-image: url("images/photo-1558379466-bed9e35ee7cb.jpeg");
 }
