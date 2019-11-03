@@ -1,0 +1,16 @@
+body {
+    font-family: 'Lora', serif;
+    background-image: linear-gradient(110deg,rgb(185, 0, 0),#f9690e);
+}
+
+.navbar {
+    background-color: rgb(204, 41, 41);
+}
+footer i {
+    font-size: 30px;
+    color: white;
+}
+footer {
+    background-color: rgb(204, 41, 41);
+    color: white;
+}
