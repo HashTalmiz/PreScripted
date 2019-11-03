@@ -19,5 +19,13 @@ i {
     color: white;
 }
 .jumbotron {
-    background-image: url("images/photo-1558379466-bed9e35ee7cb.jpeg");
+    background-image: url("images/photo-1558379466-bed9e35ee7cb.jpeg") ;
+    background-repeat: no-repeat;
+    background-size: cover;
+   color: white;
+  text-shadow: -1px -1px 0 #d9534f, 1px -1px 0 	#d9534f, -1px 1px 0 	#d9534f, 1px 1px 0 	#d9534f;
+}
+footer {
+    background-color: #d9534f;
+    color: white;
 }
