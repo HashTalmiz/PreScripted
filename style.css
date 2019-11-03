@@ -1,3 +1,10 @@
+body {
+    font-family: 'Lora', serif;
+}
+.col-6 p, .col-6 ul {
+    font-family: 'Ubuntu', sans-serif;
+
+}
 @media(min-width: 768px) {
     #doctor {
         width: 454px;
@@ -11,21 +18,28 @@
 }
 @media(max-width: 576px) {
     .col-6 .display-4 {
-        font-size: 2rem;
+        font-size: 1.5rem;
     }
 }
-i {
+.navbar {
+    background-color: rgb(204, 41, 41);
+}
+footer i {
     font-size: 30px;
     color: white;
+}
+.fa-prescription {
+    color: rgb(204, 41, 41);
+    font-size: 100px;
 }
 .jumbotron {
     background-image: url("images/photo-1558379466-bed9e35ee7cb.jpeg") ;
     background-repeat: no-repeat;
     background-size: cover;
-   color: white;
-  text-shadow: -1px -1px 0 #d9534f, 1px -1px 0 	#d9534f, -1px 1px 0 	#d9534f, 1px 1px 0 	#d9534f;
+    color: white;
+    text-shadow: -1px -1px 0 #d9534f, 1px -1px 0 	#d9534f, -1px 1px 0 	#d9534f, 1px 1px 0 	#d9534f;
 }
 footer {
-    background-color: #d9534f;
+    background-color: rgb(204, 41, 41);
     color: white;
 }
