@@ -1,5 +1,16 @@
 @media(min-width: 768px) {
-    img {
-        max-height: 350px;
+    #doctor {
+        width: 454px;
+        height: 555px;
+    }
+    #patient {
+        width: 454px;
+        height: 600px;
+
+    }
+}
+@media(min-width: 576px) {
+    div .display-4 {
+        font-size: 3em;
     }
 }
