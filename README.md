@@ -13,7 +13,7 @@ Benifits:
 * Have proper knowledge of the patients medical history.
 
 ### IMPORTANT
-Unfortunety due to the lack of back-end skilled developers, the project could not be complete, although, the front end of the entire website was made **Scratch** (without templates just to strengthen markup basics) and is completely **Resposive** to all mobile device sizes.
+Unfortunety due to the lack of back-end skilled developers, the project could not be complete, although, the front end of the entire website was made **Scratch** and is completely **Resposive** to all mobile device sizes.
 Ideally, this would have a login and sign up for both doctors and patients with a database collecting all of their prescription.
 
 #### This is the Repo for Code-RIT's Minihack
