@@ -1,15 +1,112 @@
 <template>
-  <div>
-      <h1>NEW P</h1>
+  <div id="new-prescription">
+    <h3>New prescription</h3>
+    <div class="row">
+    <form @submit.prevent="savePrescription" class="col s12">
+      <!-- <div class="row">
+        <div class="input-field col s12">
+          <input type="text" v-model="pid" disabled required>
+          <label>prescription ID#</label>
+        </div> -->
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input type="text" v-model="reasonForConsultation" required>
+          <label>Reason For Consultation</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input type="text" v-model="drName" required>
+          <label>Doctor's Name</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input type="text" v-model="drSpecialization" required>
+          <label>Dr's Specialization</label>
+        </div>
+      </div>
+      <div class="row">
+        <input type="file" accept="image/*" @change="onFileUpload" required>
+        <!-- <div v-viewer="this.options"> -->
+          <!-- <img :src="image" :alt="img" /> -->
+        <!-- </div> -->
+         <viewer :images="image">
+      <img v-for="src in image" :src="src" :key="src">
+    </viewer>
+      </div>
+      <button type="submit" class="btn">Submit</button>
+      <router-link to="/dashboard" class="btn grey">Cancel</router-link>
+    </form>
+  </div>
   </div>
 </template>
 
 <script>
-export default {
-    name: 'new-prescription',
-}
+    import firebase from 'firebase';
+    import db from './firebaseInit'
+    import 'viewerjs/dist/viewer.css'
+    // import Viewer from 'v-viewer'
+    
+    export default {
+      name: 'new-prescription',
+      data () {
+        return {
+          pid: null,
+          reasonForConsultation: null,
+          drName: null,
+          drSpecialization: null,
+          date: null,
+          details: null,
+          image: null,
+          options: {
+            inline: false, navbar: true, title: false, toolbar: true, tooltip: true, movable: false, zoomable: false, rotatable: true, scalable: false, transition: true, fullscreen: true, keyboard: false
+          }
+        }
+      },
+      methods: {
+        onFileUpload(event) {
+          const image = event.target.files[0];
+          const reader = new FileReader();
+          reader.readAsDataURL(image)
+          reader.onload = e => {
+            this.image = e.target.result;
+          }
+        },
+        savePrescription () {
+          db.collection("users").doc(firebase.auth().currentUser.uid).collection('prescriptions').add({
+            pid: null, // WRITE FUNC TO UPDATE THIS WITH docRef.id after 'THEN'. NEEDED for edit and view 
+            reasonForConsultation: this.reasonForConsultation,
+            drName: this.drName,
+            date: this.date, // ADD DATE HERE WITH NEW LOGIC
+            details: this.details,
+            image: this.image,
+          })
+          .then(docRef => {
+            console.log(`Client added: ${docRef.id}`)
+            // Update pid with newly generated id which is docRef.id
+            db.collection("users").doc(firebase.auth().currentUser.uid).collection('prescriptions').where('pid', '==', null).get().then((querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                doc.ref.update({
+                  pid: docRef.id
+                })
+                .then(() => {
+                });
+              });
+            });
+            // Back to dashboard
+            this.$router.push('/dashboard')
+          })
+          .catch(error => {
+            console.error('Error adding prescription: ', error)
+          })
+        }
+      }
+    }
 </script>
-
-<style>
-
+<style scoped>
+img {
+  max-width: 100%;
+}
 </style>

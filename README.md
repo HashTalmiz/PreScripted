@@ -1,9 +1,7 @@
-# prescripted
-
 # PreScripted
-### The Web App which keeps a record of Prescriptions for Doctors and their patients
+### The Web App which keeps a record of Prescriptions 
 #### About:
-This Web app is used for patients who can keep a track of their prescriptions from various visits to their local clinic, and maintain a proper medical history of their intake of medicines.
+This Web app is used for patients who can keep a track of their prescriptions from various visits to their doctor/local clinic, and maintain a proper medical history of their intake of medicines.
 
 Benifits:
 * Keep a record of their prescriptions for their next visit to the pharmacy.

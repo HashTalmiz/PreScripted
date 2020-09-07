@@ -5,6 +5,8 @@ import Dashboard from "../views/Dashboard.vue";
 import NewPrescription from "../views/NewPrescription.vue";
 import EditPrescription from "../views/EditPrescription.vue";
 import ViewPrescription from "../views/ViewPrescription";
+import Login from "../views/Login";
+import Register from "../views/Register";
 
 Vue.use(VueRouter)
 
@@ -13,6 +15,16 @@ Vue.use(VueRouter)
     path: '/',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: Register
   },
   {
     path: '/dashboard',
