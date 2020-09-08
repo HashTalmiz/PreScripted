@@ -3,12 +3,6 @@
     <h3>New prescription</h3>
     <div class="row">
     <form @submit.prevent="savePrescription" class="col s12">
-      <!-- <div class="row">
-        <div class="input-field col s12">
-          <input type="text" v-model="pid" disabled required>
-          <label>prescription ID#</label>
-        </div> -->
-      </div>
       <div class="row">
         <div class="input-field col s12">
           <input type="text" v-model="reasonForConsultation" required>
@@ -28,13 +22,25 @@
         </div>
       </div>
       <div class="row">
-        <input type="file" accept="image/*" @change="onFileUpload" required>
-        <!-- <div v-viewer="this.options"> -->
-          <!-- <img :src="image" :alt="img" /> -->
-        <!-- </div> -->
-         <viewer :images="image">
-      <img v-for="src in image" :src="src" :key="src">
-    </viewer>
+        <div class="input-field col s12">
+          <input type="text" v-model="date" required>
+          <label>Date</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <textarea v-model="details" cols="30" rows="10"></textarea>
+          <label>Details</label>
+        </div>
+      </div>
+      <div class="row">
+        <input type="file" accept="image/*" @change="onFileUpload">
+        <div v-if="image" v-viewer="this.options">
+          <img :src="image" alt="img" />
+        </div>
+        <div v-else>
+          No Image uploaded
+        </div>  
       </div>
       <button type="submit" class="btn">Submit</button>
       <router-link to="/dashboard" class="btn grey">Cancel</router-link>
@@ -44,10 +50,8 @@
 </template>
 
 <script>
-    import firebase from 'firebase';
-    import db from './firebaseInit'
-    import 'viewerjs/dist/viewer.css'
-    // import Viewer from 'v-viewer'
+  import firebase from "firebase";
+  import db from "@/Firebase/firebaseinit";
     
     export default {
       name: 'new-prescription',
@@ -79,9 +83,11 @@
             pid: null, // WRITE FUNC TO UPDATE THIS WITH docRef.id after 'THEN'. NEEDED for edit and view 
             reasonForConsultation: this.reasonForConsultation,
             drName: this.drName,
+            drSpecialization: this.drSpecialization,
             date: this.date, // ADD DATE HERE WITH NEW LOGIC
             details: this.details,
             image: this.image,
+            createdAt: db.FieldValue.serverTimestamp()
           })
           .then(docRef => {
             console.log(`Client added: ${docRef.id}`)
