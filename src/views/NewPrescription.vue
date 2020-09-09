@@ -35,6 +35,7 @@
       </div>
       <div class="row">
         <input type="file" accept="image/*" @change="onFileUpload">
+        <button @click.prevent="image=null" class="btn pink">Remove Image</button>
         <div v-if="image" v-viewer="this.options">
           <img :src="image" alt="img" />
         </div>
@@ -46,15 +47,20 @@
       <router-link to="/dashboard" class="btn grey">Cancel</router-link>
     </form>
   </div>
+  <Footer/>
   </div>
 </template>
 
 <script>
   import firebase from "firebase";
   import db from "@/Firebase/firebaseinit";
-    
+  import Footer from "../components/Footer";
+
     export default {
       name: 'new-prescription',
+      components: {
+        Footer
+      },
       data () {
         return {
           pid: null,
@@ -87,7 +93,7 @@
             date: this.date, // ADD DATE HERE WITH NEW LOGIC
             details: this.details,
             image: this.image,
-            createdAt: db.FieldValue.serverTimestamp()
+            // createdAt: db.FieldValue.serverTimestamp()
           })
           .then(docRef => {
             console.log(`Client added: ${docRef.id}`)
@@ -98,11 +104,11 @@
                   pid: docRef.id
                 })
                 .then(() => {
+                  this.$router.push('/dashboard')
                 });
               });
             });
             // Back to dashboard
-            this.$router.push('/dashboard')
           })
           .catch(error => {
             console.error('Error adding prescription: ', error)
@@ -114,5 +120,8 @@
 <style scoped>
 img {
   max-width: 100%;
+}
+.btn {
+  margin: 0 5px;
 }
 </style>

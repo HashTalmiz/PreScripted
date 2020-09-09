@@ -5,50 +5,57 @@
     <form @submit.prevent="updatePrescription" class="col s12">
       <div class="row">
         <div class="input-field col s12">
-          <input type="text" v-model="reasonForConsultation" required>
+          <input type="text" placeholder="Reason For Consultation" v-model="reasonForConsultation" required>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <input type="text" v-model="drName" required>
+          <input type="text" placeholder="Dr Name" v-model="drName" required>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <input type="text" v-model="drSpecialization" required>
+          <input type="text" placeholder="Dr Specialization" v-model="drSpecialization" required>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <input type="text" v-model="date" required>
+          <input type="text" placeholder="Date" v-model="date" required>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-            <textarea v-model="details" cols="30" rows="10"></textarea>
+            <textarea v-model="details" placeholder="Details" cols="30" rows="10"></textarea>
         </div>
       </div>
       <div class="row">
         <input type="file" accept="image/*" @change="onFileUpload">
-        <button @click.prevent="image=null">Remove Image</button>
+        <button @click.prevent="image=null" class="btn red">Remove Image</button>
         <div v-if="image" v-viewer="this.options">
           <img :src="image" alt="Prescription Image" />
         </div>  
         <div v-else>No image uploaded</div>
       </div>
       <button type="submit" class="btn">Submit</button>
+      <button @click="deleteEmployee" class="btn right red">Delete Prescription</button>
+
       <router-link to="/dashboard" class="btn grey">Cancel</router-link>
     </form>
   </div>
+  <Footer/>
   </div>
 </template>
 
 <script>
 import firebase from 'firebase';
 import db from "@/Firebase/firebaseinit";
+import Footer from "../components/Footer";
 
 export default {
     name:'edit-prescription',
+    components: {
+      Footer
+    },
     data () {
       return {
         pid: null,
@@ -70,7 +77,7 @@ export default {
             vm.pid = doc.data().pid;
             vm.reasonForConsultation = doc.data().reasonForConsultation;
             vm.drName = doc.data().drName;
-            vm.drSpecialization = doc.dat().drSpecialization;
+            vm.drSpecialization = doc.data().drSpecialization;
             vm.date = doc.data().drSpecialization;
             vm.details = doc.data().details;
             vm.image = doc.data().image;
@@ -119,12 +126,38 @@ export default {
             });
           })
         })
+      },
+      deleteEmployee() {
+      if (confirm('Are you sure?')) {
+        db.collection("users").doc(firebase.auth().currentUser.uid)
+          .collection('prescriptions')
+          .where('pid', '==', this.$route.params.pid)
+          .get()
+          .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+              doc.ref.delete();
+              console.log("Deleted Prescription")
+              this.$router.push('/dashboard');
+            });
+          });
       }
+    }
     },
 }
 
 </script>
 
-<style>
-
+<style scoped>
+.btn {
+  margin: 0 5px;
+} 
+textarea {
+  width: 100%;
+  height: 100px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 10px;
+}
 </style>

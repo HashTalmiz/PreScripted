@@ -2,11 +2,11 @@
 <div id="view-prescription">
     <ul class="collection with-header">
       <li class="collection-header"><h4>{{reasonForConsultation}}</h4></li>
-      <li class="collection-item">Prescription ID#: {{pid}}</li>
-      <li class="collection-item">Doctor's Name: {{drName}}</li>
-      <li class="collection-item">Doctor's Specialization: {{drSpecialization}}</li>
-      <li class="collection-item">Date: {{date}}</li>
-      <li class="collection-item">Details: {{details}}</li>
+      <li class="collection-item"><b>Prescription ID#:</b> {{pid}}</li>
+      <li class="collection-item"><b>Doctor's Name:</b> {{drName}}</li>
+      <li class="collection-item"><b>Doctor's Specialization:</b> {{drSpecialization}}</li>
+      <li class="collection-item"><b>Date:</b> {{date}}</li>
+      <li class="collection-item"><b>Details:</b><div> {{details}}</div></li>
       <div class="row">
         <div v-if="image" v-viewer="this.options">
           <img :src="image" alt="image" />
@@ -17,23 +17,35 @@
       </div>
     </ul>
     <router-link to="/dashboard" class="btn grey">Back</router-link>
-    <button @click="deleteEmployee" class="btn red">Delete</button>
 
-    <div class="fixed-action-btn">
-      <router-link v-if="pid" v-bind:to="{ name: 'edit-prescription', params: { pid: pid }}" class="btn-floating btn-large red">
+    <div v-if="NotGuest" class="fixed-action-btn">
+      <router-link  v-if="pid" v-bind:to="{ name: 'edit-prescription', params: { pid: pid }}" class="btn-floating btn-large red">
         <i class="fa fa-pencil"></i>
       </router-link>
     </div>
+      <h5 style="display:inline" v-else>
+        Guest Account Has Edit Mode Disabled
+      </h5>
+    <Footer/>
   </div>
+   
 </template>
 
 <script>
 import firebase from 'firebase';
 import db from "@/Firebase/firebaseinit";
-
+import Footer from "../components/Footer";
 export default {
 
   name: 'view-prescription',
+  components: {
+    Footer
+  },
+  computed: {
+    NotGuest() {
+      return firebase.auth().currentUser.email!=='guest@gmail.com'
+    }
+  },
   data(){
     return {
       pid: null,
@@ -42,7 +54,10 @@ export default {
       drSpecialization: null,
       date: null,
       details: null,
-      image: null
+      image: null,
+      options: {
+        inline: false, navbar: true, title: false, toolbar: true, tooltip: true, movable: false, zoomable: false, rotatable: true, scalable: false, transition: true, fullscreen: true, keyboard: false
+      }
     };
   },
   beforeRouteEnter(to, from, next) {
@@ -56,8 +71,8 @@ export default {
             vm.pid = doc.data().pid;
             vm.reasonForConsultation = doc.data().reasonForConsultation;
             vm.drName = doc.data().drName;
-            vm.drSpecialization = doc.dat().drSpecialization;
-            vm.date = doc.data().drSpecialization;
+            vm.drSpecialization = doc.data().drSpecialization;
+            vm.date = doc.data().date;
             vm.details = doc.data().details;
             vm.image = doc.data().image;
           });
@@ -87,24 +102,21 @@ export default {
           });
         });
     },
-    deleteEmployee() {
-      if (confirm('Are you sure?')) {
-        db.collection("users").doc(firebase.auth().currentUser.uid)
-          .collection('prescriptions')
-          .where('pid', '==', this.$route.params.pid)
-          .get()
-          .then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-              doc.ref.delete();
-              this.$router.push('/dashboard');
-            });
-          });
-      }
-    }
   }
 }
 </script>
 
 <style>
-
+img {
+  max-width: 100%;
+}
+textarea {
+  width: 100%;
+  height: 100px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 10px;
+}
 </style>

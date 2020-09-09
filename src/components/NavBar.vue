@@ -2,9 +2,9 @@
   <nav>
       <div class="nav-wrapper pink">
         <div class="container">
-          <router-link to="/dashboard" class="brand-logo">Employee Manager</router-link>    
+          <router-link to="/dashboard"><b style="font-size: 2rem">Rx</b></router-link>    
           <ul class="right">
-            <li v-if="isLoggedIn"><span class="email black-text">{{currentUser}}</span></li>
+            <li v-if="isLoggedIn"><span class="email white-text hide-on-small-only">{{currentUser}}</span></li>
             <li v-if="isLoggedIn"><router-link to="/">Dashboard</router-link></li>
             <li v-if="!isLoggedIn"><router-link to="/login">Login</router-link></li>
             <li v-if="!isLoggedIn"><router-link to="/register">Register</router-link></li>
@@ -16,20 +16,33 @@
 
 </template>
 <script>
-// import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 export default {
   
   name: 'navbar',
-  data() {
+ data() {
     return {
       isLoggedIn: false,
       currentUser: false
     };
   },
-  
+  created() {
+    if (firebase.auth().currentUser) {
+      this.isLoggedIn = true;
+      this.currentUser = firebase.auth().currentUser.email;
+    }
+  },
   methods: {
-    
+    logout: function() {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.$router.go({ path: this.$router.path });
+        });
+    }
   }
 };
 </script>

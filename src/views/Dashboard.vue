@@ -1,12 +1,14 @@
 <template>
   <div id="home">
-    <ul class="collection with-header">
-      <li class="collection-header"><h4>My Prescriptions</h4></li>
-      <li v-for="rx in prescriptions" v-bind:key="rx.pid" class="collection-item">
-        <div class="chip">{{rx.pid}}</div>
-        {{rx.reasonForConsultation}}: {{rx.DrName}} 
-         <router-link v-if="!loading" class="secondary-content" v-bind:to="{ name: 'view-prescription', params: { pid:rx.pid }}"><i class="fa fa-eye"></i></router-link>
+      <h4 class="collection-header">My Prescriptions</h4>
+    <ul v-for="rx in prescriptions" v-bind:key="rx.pid" class="collection with-header">
+      <router-link v-bind:to="{ name: 'view-prescription', params: { pid:rx.pid }}"><li class="collection-item">
+        <h6>{{rx.reasonForConsultation}}</h6>
+        <div class="chip pink white-text">{{rx.date}}</div>
+        <div class="chip blue yellow-text">{{rx.drName}}</div>
+        <div class="chip yellow blue-text">{{rx.drSpecialization}}</div>
       </li>
+         </router-link>
     </ul>
     <div class="fixed-action-btn">
       <router-link to="/new" class="btn-floating btn-large red">
@@ -28,6 +30,9 @@ export default {
           loading: true
         }
     },
+    computed: {
+      
+    },
     created () {
       db.collection("users").doc(firebase.auth().currentUser.uid)
         .collection('prescriptions')
@@ -38,8 +43,8 @@ export default {
             const data = {
               pid: doc.id,
               reasonForConsultation: doc.data().reasonForConsultation,
-              DrName: doc.data().drName,
-              DrSpecialization: doc.data().drSpecialization,
+              drName: doc.data().drName,
+              drSpecialization: doc.data().drSpecialization,
               date: doc.data().date,
             };
             this.prescriptions.push(data);
@@ -49,3 +54,9 @@ export default {
     }
 }
 </script>
+<style scoped>
+a {
+  text-decoration: none;
+  color: inherit;
+}
+</style>
