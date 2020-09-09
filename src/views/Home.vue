@@ -1,6 +1,7 @@
 <template>
   <div class="home">
-    <h1>HOME PAGE</h1>
+    <h1>LANDING PAGE</h1>
+    <p>Is Under construction, The WebApp is complete though, click on login to continue</p>
   </div>
 </template>
 

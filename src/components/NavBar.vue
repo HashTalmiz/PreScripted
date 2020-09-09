@@ -2,7 +2,7 @@
   <nav>
       <div class="nav-wrapper pink">
         <div class="container">
-          <router-link to="/dashboard"><b style="font-size: 2rem">Rx</b></router-link>    
+          <router-link to="/dashboard"><b style="font-size: 2rem">PreScripted</b></router-link>    
           <ul class="right">
             <li v-if="isLoggedIn"><span class="email white-text hide-on-small-only">{{currentUser}}</span></li>
             <li v-if="isLoggedIn"><router-link to="/">Dashboard</router-link></li>

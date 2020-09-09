@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import firebase from 'firebase/app';
 import "firebase/auth";
-import './Firebase/firebaseinit';
+import './firebaseSettings/firebaseinit';
 import 'viewerjs/dist/viewer.css'
 import Viewer from 'v-viewer'
 

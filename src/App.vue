@@ -12,6 +12,9 @@ import NavBar  from "./components/NavBar";
 export default {
   components: {
     NavBar,
+  },
+  created() {
+    document.title = 'PreScripted | Your Prescriptions now safe in the cloud'
   }
 }
 </script>

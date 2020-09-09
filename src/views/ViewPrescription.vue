@@ -33,7 +33,7 @@
 
 <script>
 import firebase from 'firebase';
-import db from "@/Firebase/firebaseinit";
+import db from "@/firebaseSettings/firebaseinit";
 import Footer from "../components/Footer";
 export default {
 
