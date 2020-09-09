@@ -17,7 +17,7 @@
               <!-- <label class="white-text" for="password">Password</label> -->
             </div>
             <button v-on:click="login" class="btn btn-large btn-extended grey lighten-4 black-text">Login</button>
-            <button @click="guestLogin" class="btn btn-large btn-extended grey lighten-4 black-text" style="margin-left: 10px">Login as Guest</button>
+            <button @click="guestLogin" class="btn btn-large grey lighten-4 black-text" style="margin-left: 10px">Login as Guest</button>
           </form>
         </div>
       </div>
