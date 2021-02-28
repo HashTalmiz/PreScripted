@@ -58,7 +58,6 @@ export default {
     },
     data () {
       return {
-        pid: null,
         reasonForConsultation: null,
         drName: null,
         drSpecialization: null,
@@ -71,10 +70,9 @@ export default {
       }
     },
     beforeRouteEnter (to, from, next) {
-      db.collection("users").doc(firebase.auth().currentUser.uid).collection('prescriptions').where('pid', '==', to.params.pid).get().then((querySnapshot) => {
+      db.collection("users").doc(firebase.auth().currentUser.uid).collection('prescriptions').where(firebase.firestore.FieldPath.documentId(), '==', to.params.pid).get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           next(vm => {
-            vm.pid = doc.data().pid;
             vm.reasonForConsultation = doc.data().reasonForConsultation;
             vm.drName = doc.data().drName;
             vm.drSpecialization = doc.data().drSpecialization;
@@ -97,21 +95,20 @@ export default {
             this.image = e.target.result;
           }
         },
-      fetchData () {
-        db.collection("users").doc(firebase.auth().currentUser.uid).collection('prescriptions').where('prescription_id', '==', this.$route.params.prescription_id).get().then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.pid = doc.data().pid
-            this.reasonForConsultation = doc.data().reasonForConsultation
-            this.drName = doc.data().drName
-            this.drSpecialization = doc.data().drSpecialization
-            this.date = doc.data().date // ADD DATE HERE WITH NEW LOGIC().
-            this.details = doc.data().details
-            this.image = doc.data().image
-          })
-        })
-      },
+      // fetchData () {
+      //   db.collection("users").doc(firebase.auth().currentUser.uid).collection('prescriptions').where('prescription_id', '==', this.$route.params.prescription_id).get().then((querySnapshot) => {
+      //     querySnapshot.forEach((doc) => {
+      //       this.reasonForConsultation = doc.data().reasonForConsultation
+      //       this.drName = doc.data().drName
+      //       this.drSpecialization = doc.data().drSpecialization
+      //       this.date = doc.data().date // ADD DATE HERE WITH NEW LOGIC().
+      //       this.details = doc.data().details
+      //       this.image = doc.data().image
+      //     })
+      //   })
+      // },
       updatePrescription () {
-        db.collection("users").doc(firebase.auth().currentUser.uid).collection('prescriptions').where('pid', '==', this.$route.params.pid).get().then((querySnapshot) => {
+        db.collection("users").doc(firebase.auth().currentUser.uid).collection('prescriptions').where(firebase.firestore.FieldPath.documentId(), '==', this.$route.params.pid).get().then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
             doc.ref.update({
                 reasonForConsultation: this.reasonForConsultation,
@@ -122,7 +119,7 @@ export default {
                 image: this.image,
             })
             .then(() => {
-              this.$router.push({ name: 'view-prescription', params: { pid: this.pid }})
+              this.$router.push({ name: 'view-prescription', params: { pid: this.$route.params.pid }})
             });
           })
         })
@@ -131,7 +128,7 @@ export default {
       if (confirm('Are you sure?')) {
         db.collection("users").doc(firebase.auth().currentUser.uid)
           .collection('prescriptions')
-          .where('pid', '==', this.$route.params.pid)
+          .where(firebase.firestore.FieldPath.documentId(), '==', this.$route.params.pid)
           .get()
           .then(querySnapshot => {
             querySnapshot.forEach(doc => {

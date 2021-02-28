@@ -2,7 +2,8 @@
   <div id="home">
       <h4 class="collection-header">My Prescriptions</h4>
     <ul v-for="rx in prescriptions" v-bind:key="rx.pid" class="collection with-header">
-      <router-link v-bind:to="{ name: 'view-prescription', params: { pid:rx.pid }}"><li class="collection-item">
+      <router-link v-bind:to="{ name: 'view-prescription', params: { pid:rx.pid }}">
+      <li class="collection-item">
         <h6>{{rx.reasonForConsultation}}</h6>
         <div class="chip pink white-text">{{rx.date}}</div>
         <div class="chip blue yellow-text">{{rx.drName}}</div>

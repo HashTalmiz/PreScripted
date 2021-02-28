@@ -18,8 +18,8 @@
     </ul>
     <router-link to="/dashboard" class="btn grey">Back</router-link>
 
-    <div v-if="NotGuest" class="fixed-action-btn">
-      <router-link  v-if="pid" v-bind:to="{ name: 'edit-prescription', params: { pid: pid }}" class="btn-floating btn-large red">
+    <div v-if="!isGuest" class="fixed-action-btn">
+      <router-link v-bind:to="{ name: 'edit-prescription', params: { pid: this.pid }}" class="btn-floating btn-large red">
         <i class="fa fa-pencil"></i>
       </router-link>
     </div>
@@ -41,14 +41,17 @@ export default {
   components: {
     Footer
   },
+  // beforeMount() {
+    // this.fetchData()
+  // },
   computed: {
-    NotGuest() {
-      return firebase.auth().currentUser.email!=='guest@gmail.com'
+    isGuest() {
+      return firebase.auth().currentUser.email==='guest@gmail.com'
     }
   },
   data(){
     return {
-      pid: null,
+      pid: 'default',
       reasonForConsultation: null,
       drName: null,
       drSpecialization: null,
@@ -63,12 +66,12 @@ export default {
   beforeRouteEnter(to, from, next) {
     db.collection("users").doc(firebase.auth().currentUser.uid)
       .collection('prescriptions')
-      .where('pid', '==', to.params.pid)
+      .where(firebase.firestore.FieldPath.documentId(), '==', to.params.pid)
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
           next(vm => {
-            vm.pid = doc.data().pid;
+            vm.pid = doc.id;
             vm.reasonForConsultation = doc.data().reasonForConsultation;
             vm.drName = doc.data().drName;
             vm.drSpecialization = doc.data().drSpecialization;
@@ -89,11 +92,11 @@ export default {
     fetchData() {
       db.collection("users").doc(firebase.auth().currentUser.uid)
         .collection('prescriptions')
-        .where('pid', '==', this.$route.params.pid)
+        .where(firebase.firestore.FieldPath.documentId(), '==', this.$route.params.pid)
         .get()
         .then(querySnapshot => {
           querySnapshot.forEach(doc => {
-            this.pid = doc.data().pid,
+            this.pid = doc.id,
             this.reasonForConsultation = doc.data().reasonForConsultation,
             this.drName = doc.data().drName,
             this.date = doc.data().drSpecialization,

@@ -63,7 +63,6 @@
       },
       data () {
         return {
-          pid: null,
           reasonForConsultation: null,
           drName: null,
           drSpecialization: null,
@@ -86,7 +85,6 @@
         },
         savePrescription () {
           db.collection("users").doc(firebase.auth().currentUser.uid).collection('prescriptions').add({
-            pid: null, // WRITE FUNC TO UPDATE THIS WITH docRef.id after 'THEN'. NEEDED for edit and view 
             reasonForConsultation: this.reasonForConsultation,
             drName: this.drName,
             drSpecialization: this.drSpecialization,
@@ -96,19 +94,7 @@
             // createdAt: db.FieldValue.serverTimestamp()
           })
           .then(docRef => {
-            console.log(`Client added: ${docRef.id}`)
-            // Update pid with newly generated id which is docRef.id
-            db.collection("users").doc(firebase.auth().currentUser.uid).collection('prescriptions').where('pid', '==', null).get().then((querySnapshot) => {
-              querySnapshot.forEach((doc) => {
-                doc.ref.update({
-                  pid: docRef.id
-                })
-                .then(() => {
-                  this.$router.push('/dashboard')
-                });
-              });
-            });
-            // Back to dashboard
+            this.$router.push(`/${docRef.id}`)
           })
           .catch(error => {
             console.error('Error adding prescription: ', error)
