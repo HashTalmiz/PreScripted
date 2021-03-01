@@ -36,7 +36,7 @@ export default {
     };
   },
   computed: {
-    
+
   },
   methods: {
     setGuestCredentials() {

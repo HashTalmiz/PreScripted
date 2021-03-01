@@ -6,6 +6,7 @@ import "firebase/auth";
 import './firebaseSettings/firebaseinit';
 import 'viewerjs/dist/viewer.css'
 import Viewer from 'v-viewer'
+import store from './store'
 
 Vue.use(Viewer);
 
@@ -16,6 +17,7 @@ firebase.auth().onAuthStateChanged(function () {
   {
     app = new Vue({
       router,
+      store,
       render: h => h(App)
     }).$mount('#app')
   }

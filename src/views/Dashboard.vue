@@ -20,40 +20,36 @@
 </template>
 
 <script>
-import firebase from "firebase";
-import db from "@/firebaseSettings/firebaseinit";
+// import firebase from "firebase";
+// import db from "@/firebaseSettings/firebaseinit";
+import { mapActions } from 'vuex';
+  import { mapState } from 'vuex';
 
+
+  
 export default {
     name: 'dashboard',
     data() {
         return {
-          prescriptions: [],
-          loading: true
+          // prescriptions: [],
+          // loading: true
         }
     },
     computed: {
-      
+      ...mapState([
+        'prescriptions',
+      ])
     },
+    methods: {
+    ...mapActions([
+      'getPrescriptions', //also supports payload `this.nameOfAction(amount)` 
+    ])
+  },
     created () {
-      db.collection("users").doc(firebase.auth().currentUser.uid)
-        .collection('prescriptions')
-        .get()
-        .then(querySnapshot => {
-          this.loading = false;
-          querySnapshot.forEach(doc => {
-            const data = {
-              pid: doc.id,
-              reasonForConsultation: doc.data().reasonForConsultation,
-              drName: doc.data().drName,
-              drSpecialization: doc.data().drSpecialization,
-              date: doc.data().date,
-            };
-            this.prescriptions.push(data);
-          });
-              this.loading = false;
-        });
+      this.getPrescriptions()
     }
 }
+
 </script>
 <style scoped>
 a {

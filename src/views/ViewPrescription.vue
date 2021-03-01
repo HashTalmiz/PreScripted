@@ -1,15 +1,15 @@
 <template>
 <div id="view-prescription">
     <ul class="collection with-header">
-      <li class="collection-header"><h4>{{reasonForConsultation}}</h4></li>
-      <li class="collection-item"><b>Prescription ID#:</b> {{pid}}</li>
-      <li class="collection-item"><b>Doctor's Name:</b> {{drName}}</li>
-      <li class="collection-item"><b>Doctor's Specialization:</b> {{drSpecialization}}</li>
-      <li class="collection-item"><b>Date:</b> {{date}}</li>
-      <li class="collection-item"><b>Details:</b><div> {{details}}</div></li>
+      <li class="collection-header"><h4>{{this.prescription.reasonForConsultation}}</h4></li>
+      <li class="collection-item"><b>Prescription ID#:</b> {{this.prescription.pid}}</li>
+      <li class="collection-item"><b>Doctor's Name:</b> {{this.prescription.drName}}</li>
+      <li class="collection-item"><b>Doctor's Specialization:</b> {{this.prescription.drSpecialization}}</li>
+      <li class="collection-item"><b>Date:</b> {{this.prescription.date}}</li>
+      <li class="collection-item"><b>Details:</b><div> {{this.prescription.details}}</div></li>
       <div class="row">
-        <div v-if="image" v-viewer="this.options">
-          <img :src="image" alt="image" />
+        <div v-if="this.prescription.image" v-viewer="this.options">
+          <img :src="this.prescription.image" alt="image" />
         </div>
         <div v-else>
           No Image uploaded
@@ -19,7 +19,7 @@
     <router-link to="/dashboard" class="btn grey">Back</router-link>
 
     <div v-if="!isGuest" class="fixed-action-btn">
-      <router-link v-bind:to="{ name: 'edit-prescription', params: { pid: this.pid }}" class="btn-floating btn-large red">
+      <router-link v-bind:to="{ name: 'edit-prescription', params: { pid: this.prescription.pid }}" class="btn-floating btn-large red">
         <i class="fa fa-pencil"></i>
       </router-link>
     </div>
@@ -33,78 +33,86 @@
 
 <script>
 import firebase from 'firebase';
-import db from "@/firebaseSettings/firebaseinit";
+// import db from "@/firebaseSettings/firebaseinit";
 import Footer from "../components/Footer";
+import { mapGetters } from 'vuex';
 export default {
 
   name: 'view-prescription',
   components: {
     Footer
   },
-  // beforeMount() {
-    // this.fetchData()
-  // },
+  beforeMount() {
+    this.prescription = this.getPrescriptionByPid(this.$route.params.pid)
+  },
   computed: {
+    ...mapGetters([
+      'getPrescriptionByPid',
+    ]),
     isGuest() {
       return firebase.auth().currentUser.email==='guest@gmail.com'
-    }
+    },
   },
   data(){
     return {
-      pid: 'default',
-      reasonForConsultation: null,
-      drName: null,
-      drSpecialization: null,
-      date: null,
-      details: null,
-      image: null,
+      // pid: 'default',
+      // reasonForConsultation: null,
+      // drName: null,
+      // drSpecialization: null,
+      // date: null,
+      // details: null,
+      // image: null,
+      prescription: {},
       options: {
         inline: false, navbar: true, title: false, toolbar: true, tooltip: true, movable: false, zoomable: false, rotatable: true, scalable: false, transition: true, fullscreen: true, keyboard: false
       }
     };
   },
-  beforeRouteEnter(to, from, next) {
-    db.collection("users").doc(firebase.auth().currentUser.uid)
-      .collection('prescriptions')
-      .where(firebase.firestore.FieldPath.documentId(), '==', to.params.pid)
-      .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          next(vm => {
-            vm.pid = doc.id;
-            vm.reasonForConsultation = doc.data().reasonForConsultation;
-            vm.drName = doc.data().drName;
-            vm.drSpecialization = doc.data().drSpecialization;
-            vm.date = doc.data().date;
-            vm.details = doc.data().details;
-            vm.image = doc.data().image;
-          });
-        });
-      });
-  },
+  // beforeRouteEnter(to, from, next) {
+  //   db.collection("users").doc(firebase.auth().currentUser.uid)
+  //     .collection('prescriptions')
+  //     .where(firebase.firestore.FieldPath.documentId(), '==', to.params.pid)
+  //     .get()
+  //     .then(querySnapshot => {
+  //       querySnapshot.forEach(doc => {
+  //         next(vm => {
+  //           vm.pid = doc.id;
+  //           vm.reasonForConsultation = doc.data().reasonForConsultation;
+  //           vm.drName = doc.data().drName;
+  //           vm.drSpecialization = doc.data().drSpecialization;
+  //           vm.date = doc.data().date;
+  //           vm.details = doc.data().details;
+  //           vm.image = doc.data().image;
+  //         });
+  //       });
+  //     });
+  // },
   watch: {
-    $route: 'fetchData' 
+    $route: 'lol' 
     //that is for reacting to changes in route params. 
     //If this app had any system to go to pid from the same compoent then as the page does not refresh the employee_id won't change in this component state  
     //that is why to react to that route param change we need watcher
   },
   methods: {
-    fetchData() {
-      db.collection("users").doc(firebase.auth().currentUser.uid)
-        .collection('prescriptions')
-        .where(firebase.firestore.FieldPath.documentId(), '==', this.$route.params.pid)
-        .get()
-        .then(querySnapshot => {
-          querySnapshot.forEach(doc => {
-            this.pid = doc.id,
-            this.reasonForConsultation = doc.data().reasonForConsultation,
-            this.drName = doc.data().drName,
-            this.date = doc.data().drSpecialization,
-            this.details = doc.data().details,
-            this.image = doc.data().image
-          });
-        });
-    },
+    lol() {
+      this.prescription = this.getPrescriptionByPid(this.$route.params.pid)
+    }
+    // fetchData() {
+    //   db.collection("users").doc(firebase.auth().currentUser.uid)
+    //     .collection('prescriptions')
+    //     .where(firebase.firestore.FieldPath.documentId(), '==', this.$route.params.pid)
+    //     .get()
+    //     .then(querySnapshot => {
+    //       querySnapshot.forEach(doc => {
+    //         this.pid = doc.id,
+    //         this.reasonForConsultation = doc.data().reasonForConsultation,
+    //         this.drName = doc.data().drName,
+    //         this.date = doc.data().drSpecialization,
+    //         this.details = doc.data().details,
+    //         this.image = doc.data().image
+    //       });
+    //     });
+    // },
   }
 }
 </script>
