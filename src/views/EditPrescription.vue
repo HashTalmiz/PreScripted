@@ -5,27 +5,27 @@
     <form @submit.prevent="updatePrescription" class="col s12">
       <div class="row">
         <div class="input-field col s12">
-          <input type="text" placeholder="Reason For Consultation" v-model="reasonForConsultation" required>
+          <input type="text" placeholder="Reason For Consultation" v-model="prescription.reasonForConsultation" required>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <input type="text" placeholder="Dr Name" v-model="drName" required>
+          <input type="text" placeholder="Dr Name" v-model="prescription.drName" required>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <input type="text" placeholder="Dr Specialization" v-model="drSpecialization" required>
+          <input type="text" placeholder="Dr Specialization" v-model="prescription.drSpecialization" required>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <input type="text" placeholder="Date" v-model="date" required>
+          <input type="text" placeholder="Date" v-model="prescription.date" required>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-            <textarea v-model="details" placeholder="Details" cols="30" rows="10"></textarea>
+            <textarea v-model="prescription.details" placeholder="Details" cols="30" rows="10"></textarea>
         </div>
       </div>
       <div class="row">
@@ -50,43 +50,58 @@
 import firebase from 'firebase';
 import db from "@/firebaseSettings/firebaseinit";
 import Footer from "../components/Footer";
+import { mapMutations } from 'vuex';
+import { mapGetters } from 'vuex';
+
 
 export default {
     name:'edit-prescription',
     components: {
       Footer
     },
+    beforeMount() {
+      this.retrievePrescription();
+    },
     data () {
       return {
-        reasonForConsultation: null,
-        drName: null,
-        drSpecialization: null,
-        date: null,
-        details: null,
+        prescription: {},
         image: null,
         options: {
             inline: false, navbar: true, title: false, toolbar: true, tooltip: true, movable: false, zoomable: false, rotatable: true, scalable: false, transition: true, fullscreen: true, keyboard: false
         }
       }
     },
-    beforeRouteEnter (to, from, next) {
-      db.collection("users").doc(firebase.auth().currentUser.uid).collection('prescriptions').where(firebase.firestore.FieldPath.documentId(), '==', to.params.pid).get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          next(vm => {
-            vm.reasonForConsultation = doc.data().reasonForConsultation;
-            vm.drName = doc.data().drName;
-            vm.drSpecialization = doc.data().drSpecialization;
-            vm.date = doc.data().drSpecialization;
-            vm.details = doc.data().details;
-            vm.image = doc.data().image;
-          })
-        })
-      })
-    },
+    // beforeRouteEnter (to, from, next) {
+    //   db.collection("users").doc(firebase.auth().currentUser.uid).collection('prescriptions').where(firebase.firestore.FieldPath.documentId(), '==', to.params.pid).get().then((querySnapshot) => {
+    //     querySnapshot.forEach((doc) => {
+    //       next(vm => {
+    //         vm.reasonForConsultation = doc.data().reasonForConsultation;
+    //         vm.drName = doc.data().drName;
+    //         vm.drSpecialization = doc.data().drSpecialization;
+    //         vm.date = doc.data().drSpecialization;
+    //         vm.details = doc.data().details;
+    //         vm.image = doc.data().image;
+    //       })
+    //     })
+    //   })
+    // },
     watch: {
-      '$route': 'fetchData'
+      '$route': 'retrievePrescription'
+    },
+    computed: {
+      ...mapGetters([
+        'getPrescriptionByPid',
+      ])
     },
     methods: {
+      ...mapMutations([
+      'updatePrescription',
+      'deletePrescription', //also supports payload `this.nameOfMutation(amount)` 
+    ]),
+    retrievePrescription() {
+      this.prescription = this.getPrescriptionByPid(this.$route.params.pid)
+      this.image = this.prescription.image
+    },
       onFileUpload(event) {
           const image = event.target.files[0];
           const reader = new FileReader();
@@ -111,14 +126,18 @@ export default {
         db.collection("users").doc(firebase.auth().currentUser.uid).collection('prescriptions').where(firebase.firestore.FieldPath.documentId(), '==', this.$route.params.pid).get().then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
             doc.ref.update({
-                reasonForConsultation: this.reasonForConsultation,
-                drName: this.drName,
-                drSpecialization: this.drSpecialization,
-                date: this.date, 
-                details: this.details,
+                reasonForConsultation: this.prescription.reasonForConsultation,
+                drName: this.prescription.drName,
+                drSpecialization: this.prescription.drSpecialization,
+                date: this.prescription.date, 
+                details: this.prescription.details,
                 image: this.image,
             })
             .then(() => {
+              this.updatePrescription({
+                ...this.prescription,
+                image: this.image
+              })
               this.$router.push({ name: 'view-prescription', params: { pid: this.$route.params.pid }})
             });
           })
@@ -133,6 +152,7 @@ export default {
           .then(querySnapshot => {
             querySnapshot.forEach(doc => {
               doc.ref.delete();
+              // this.deletePrescription(this.$route.params.pid);
               console.log("Deleted Prescription")
               this.$router.push('/dashboard');
             });

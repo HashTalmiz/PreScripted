@@ -43,7 +43,8 @@ export default {
     Footer
   },
   beforeMount() {
-    this.prescription = this.getPrescriptionByPid(this.$route.params.pid)
+    // this.prescription = this.getPrescriptionByPid(this.$route.params.pid)
+    this.retrievePrescription()
   },
   computed: {
     ...mapGetters([
@@ -88,13 +89,13 @@ export default {
   //     });
   // },
   watch: {
-    $route: 'lol' 
+    $route: 'retrievePrescription' 
     //that is for reacting to changes in route params. 
     //If this app had any system to go to pid from the same compoent then as the page does not refresh the employee_id won't change in this component state  
     //that is why to react to that route param change we need watcher
   },
   methods: {
-    lol() {
+    retrievePrescription() {
       this.prescription = this.getPrescriptionByPid(this.$route.params.pid)
     }
     // fetchData() {

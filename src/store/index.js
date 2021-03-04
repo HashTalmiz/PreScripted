@@ -2,22 +2,40 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import firebase from "firebase";
 import db from "@/firebaseSettings/firebaseinit";
+import createPersistedState from 'vuex-persistedstate'
+
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  plugins: [createPersistedState({
+    storage: window.sessionStorage,
+  })],
   state: {
     prescriptions: []
   },
   mutations: {
-    updatePrescriptions: (state, payload)=> {
+    populatePrescriptions: (state, payload)=> {
       state.prescriptions = payload;
+    },
+    addPrescription: (state, payload) => {
+      state.prescriptions.push(payload);
+    },
+    deletePrescription: (state, payload) => {
+      state.prescriptions = state.prescriptions.filter(item => item.pid !== payload);
+    },
+    updatePrescription: (state, payload) => {
+      state.prescriptions = state.prescriptions.map( x => {
+         if (x.pid === payload.pid)
+            return payload;
+          return x;
+      });
     }
   },
   actions: {
-    async getPrescriptions({state, commit}) {
-      if(state.prescriptions.length) 
-        return;
+    async getPrescriptions({ commit }) {
+      // localStorage.clear()
+      sessionStorage.clear();
 
       const querySnapshot = await db.collection("users").doc(firebase.auth().currentUser.uid)
       .collection('prescriptions')
@@ -31,8 +49,22 @@ export default new Vuex.Store({
           });
       });
        
-      return commit('updatePrescriptions',prescriptions);
+      commit('populatePrescriptions',prescriptions);
+    },
+    async addPrescription({ commit }, payload) {
+      const docRef = await db.collection("users").doc(firebase.auth().currentUser.uid).collection('prescriptions').add({
+        ...payload,
+        // createdAt: db.FieldValue.serverTimestamp()
+      })
+      // await dispatch('getPrescriptions');
+      commit('addPrescription', {pid: docRef.id,...payload})
+        // .catch(error => {
+          // console.error('Error adding prescription: ', error)
+        // })
+
+      // return docRef;
     }
+
   },
   getters: {
     getPrescriptionByPid: (state) => (pid) => {

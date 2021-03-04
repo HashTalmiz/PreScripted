@@ -45,8 +45,8 @@ export default {
       'getPrescriptions', //also supports payload `this.nameOfAction(amount)` 
     ])
   },
-    created () {
-      this.getPrescriptions()
+    async created () {
+      await this.getPrescriptions()
     }
 }
 
