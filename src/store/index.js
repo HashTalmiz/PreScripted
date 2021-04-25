@@ -25,7 +25,7 @@ export default new Vuex.Store({
       state.prescriptions = state.prescriptions.filter(item => item.pid !== payload);
     },
     updatePrescription: (state, payload) => {
-      state.prescriptions = state.prescriptions.map( x => {
+      state.prescriptions = state.prescriptions.map(x => {
          if (x.pid === payload.pid)
             return payload;
           return x;
@@ -34,8 +34,10 @@ export default new Vuex.Store({
   },
   actions: {
     async getPrescriptions({ commit }) {
-      // localStorage.clear()
-      sessionStorage.clear();
+      // if(state.prescriptions.length) // Add this when triggers to listen to changes are setup 
+        // return;
+
+      sessionStorage.clear(); // Vuex locally stored in the session for persistence
 
       const querySnapshot = await db.collection("users").doc(firebase.auth().currentUser.uid)
       .collection('prescriptions')
@@ -63,8 +65,26 @@ export default new Vuex.Store({
         // })
 
       // return docRef;
-    }
+    },
+    async updatePrescription({ commit }, payload) {
+      const {pid, ...prescriptionData} = payload;
+      
 
+      await db.collection("users").doc(firebase.auth().currentUser.uid).collection('prescriptions').doc(pid)
+        .update(prescriptionData)
+        commit('updatePrescription', payload);
+    },
+    async deletePrescription( { commit }, pid) {
+      const querySnapshot = await db.collection("users").doc(firebase.auth().currentUser.uid)
+        .collection('prescriptions')
+        .where(firebase.firestore.FieldPath.documentId(), '==', pid)
+        .get()
+        
+          querySnapshot.forEach(doc => {
+            doc.ref.delete();
+          });
+          commit('deletePrescription',pid)
+    }
   },
   getters: {
     getPrescriptionByPid: (state) => (pid) => {

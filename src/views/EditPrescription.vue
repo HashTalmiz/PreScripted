@@ -2,7 +2,7 @@
    <div id="new-prescription">
     <h3>Edit prescription</h3>
     <div class="row">
-    <form @submit.prevent="updatePrescription" class="col s12">
+    <form @submit.prevent="update" class="col s12">
       <div class="row">
         <div class="input-field col s12">
           <input type="text" placeholder="Reason For Consultation" v-model="prescription.reasonForConsultation" required>
@@ -37,7 +37,7 @@
         <div v-else>No image uploaded</div>
       </div>
       <button type="submit" class="btn">Submit</button>
-      <button @click="deleteEmployee" class="btn right red">Delete Prescription</button>
+      <button @click="Delete" class="btn right red">Delete Prescription</button>
 
       <router-link to="/dashboard" class="btn grey">Cancel</router-link>
     </form>
@@ -47,11 +47,12 @@
 </template>
 
 <script>
-import firebase from 'firebase';
-import db from "@/firebaseSettings/firebaseinit";
+// import firebase from 'firebase';
+// import db from "@/firebaseSettings/firebaseinit";
 import Footer from "../components/Footer";
-import { mapMutations } from 'vuex';
+// import { mapMutations } from 'vuex';
 import { mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 
 
 export default {
@@ -86,7 +87,7 @@ export default {
     //   })
     // },
     watch: {
-      '$route': 'retrievePrescription'
+      // '$route': 'retrievePrescription'
     },
     computed: {
       ...mapGetters([
@@ -94,9 +95,9 @@ export default {
       ])
     },
     methods: {
-      ...mapMutations([
+      ...mapActions([
       'updatePrescription',
-      'deletePrescription', //also supports payload `this.nameOfMutation(amount)` 
+      'deletePrescription' //also supports payload `this.nameOfAction(amount)` 
     ]),
     retrievePrescription() {
       this.prescription = this.getPrescriptionByPid(this.$route.params.pid)
@@ -122,41 +123,40 @@ export default {
       //     })
       //   })
       // },
-      updatePrescription () {
-        db.collection("users").doc(firebase.auth().currentUser.uid).collection('prescriptions').where(firebase.firestore.FieldPath.documentId(), '==', this.$route.params.pid).get().then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            doc.ref.update({
-                reasonForConsultation: this.prescription.reasonForConsultation,
-                drName: this.prescription.drName,
-                drSpecialization: this.prescription.drSpecialization,
-                date: this.prescription.date, 
-                details: this.prescription.details,
-                image: this.image,
-            })
-            .then(() => {
-              this.updatePrescription({
-                ...this.prescription,
-                image: this.image
-              })
-              this.$router.push({ name: 'view-prescription', params: { pid: this.$route.params.pid }})
-            });
-          })
+      async update () {
+        await this.updatePrescription({
+          ...this.prescription,
+          pid: this.$route.params.pid,
+          image: this.image
         })
+        this.$router.push({ name: 'view-prescription', params: { pid: this.$route.params.pid }})
+        // this.$router.push("/dashboard")
       },
-      deleteEmployee() {
+
+        // db.collection("users").doc(firebase.auth().currentUser.uid).collection('prescriptions').where(firebase.firestore.FieldPath.documentId(), '==', this.$route.params.pid).get().then((querySnapshot) => {
+        //   querySnapshot.forEach((doc) => {
+        //     doc.ref.update({
+        //         reasonForConsultation: this.prescription.reasonForConsultation,
+        //         drName: this.prescription.drName,
+        //         drSpecialization: this.prescription.drSpecialization,
+        //         date: this.prescription.date, 
+        //         details: this.prescription.details,
+        //         image: this.image,
+        //     })
+        //     .then(() => {
+        //       this.updatePrescription({
+        //         ...this.prescription,
+        //         image: this.image
+        //       })
+        //       this.$router.push({ name: 'view-prescription', params: { pid: this.$route.params.pid }})
+        //     });
+        //   })
+        // })
+      async Delete() {
       if (confirm('Are you sure?')) {
-        db.collection("users").doc(firebase.auth().currentUser.uid)
-          .collection('prescriptions')
-          .where(firebase.firestore.FieldPath.documentId(), '==', this.$route.params.pid)
-          .get()
-          .then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-              doc.ref.delete();
-              // this.deletePrescription(this.$route.params.pid);
-              console.log("Deleted Prescription")
-              this.$router.push('/dashboard');
-            });
-          });
+        const id = this.$route.params.pid;
+        this.$router.push('/dashboard');
+        await this.deletePrescription(id)
       }
     }
     },
