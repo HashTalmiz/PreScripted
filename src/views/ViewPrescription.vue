@@ -118,7 +118,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 img {
   max-width: 100%;
 }

@@ -47,7 +47,10 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.nav-wrapper  {
+  background-color: $lol;
+}
 .email {
   padding-right: 10px;
 }
