@@ -1,8 +1,7 @@
 <template>
-<div id="view-prescription">
+<div id="view-prescription" class="container">
     <ul class="collection with-header">
       <li class="collection-header"><h4>{{this.prescription.reasonForConsultation}}</h4></li>
-      <li class="collection-item"><b>Prescription ID#:</b> {{this.prescription.pid}}</li>
       <li class="collection-item"><b>Doctor's Name:</b> {{this.prescription.drName}}</li>
       <li class="collection-item"><b>Doctor's Specialization:</b> {{this.prescription.drSpecialization}}</li>
       <li class="collection-item"><b>Date:</b> {{this.prescription.date}}</li>
@@ -23,9 +22,9 @@
         <i class="fa fa-pencil"></i>
       </router-link>
     </div>
-      <h5 style="display:inline" v-else>
+      <p style="display:inline" v-else>
         Guest Account Has Edit Mode Disabled
-      </h5>
+      </p>
     <Footer/>
   </div>
    

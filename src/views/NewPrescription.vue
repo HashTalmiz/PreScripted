@@ -1,5 +1,5 @@
 <template>
-  <div id="new-prescription">
+  <div id="new-prescription" class="container">
     <h3>New prescription</h3>
     <div class="row">
     <form @submit.prevent="savePrescription" class="col s12">

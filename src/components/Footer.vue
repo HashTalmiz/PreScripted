@@ -1,12 +1,16 @@
 <template>
   <footer>
-      <div>© PreScripted 2020 | Talmiz Ahmed</div>
+      <div>© PreScripted {{year}} | Talmiz Ahmed</div>
   </footer>
 </template>
 
 <script>
 export default {
-
+  computed: {
+    year() {
+      return new Date().getFullYear() 
+    }
+  },
 }
 </script>
 

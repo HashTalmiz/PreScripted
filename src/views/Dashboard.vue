@@ -1,5 +1,5 @@
 <template>
-  <div id="home">
+  <div id="home" class="container">
       <h4 class="collection-header">My Prescriptions</h4>
     <ul v-for="rx in prescriptions" v-bind:key="rx.pid" class="collection with-header">
       <router-link v-bind:to="{ name: 'view-prescription', params: { pid:rx.pid }}">
@@ -11,16 +11,19 @@
       </li>
          </router-link>
     </ul>
-    <div class="fixed-action-btn">
-      <router-link to="/new" class="btn-floating btn-large red">
-        <i class="fa fa-plus"></i>
-      </router-link>
-    </div>
+      <div v-if="!isGuest" class="fixed-action-btn">
+        <router-link to="/new" class="btn-floating btn-large red">
+          <i class="fa fa-plus"></i>
+        </router-link>
+      </div>
+      <div v-else class="fixed-action-btn">
+        <p> Adding new prescription is disabled in Guest Account</p>
+      </div>
   </div>
 </template>
 
 <script>
-// import firebase from "firebase";
+import firebase from "firebase";
 // import db from "@/firebaseSettings/firebaseinit";
 import { mapActions } from 'vuex';
   import { mapState } from 'vuex';
@@ -38,7 +41,10 @@ export default {
     computed: {
       ...mapState([
         'prescriptions',
-      ])
+      ]),
+      isGuest() {
+        return firebase.auth().currentUser.email==='guest@gmail.com'
+      },
     },
     methods: {
     ...mapActions([

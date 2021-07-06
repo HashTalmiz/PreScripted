@@ -2,12 +2,12 @@
   <nav>
       <div class="nav-wrapper pink">
         <div class="container">
-          <router-link to="/dashboard"><b style="font-size: 2rem">PreScripted</b></router-link>    
+          <router-link to="/"><b style="font-size: 2rem">PreScripted</b></router-link>    
           <ul class="right">
             <li v-if="isLoggedIn"><span class="email white-text hide-on-small-only">{{currentUser}}</span></li>
-            <li v-if="isLoggedIn"><router-link to="/" >Dashboard</router-link></li>
-            <li v-if="!isLoggedIn"><router-link to="/login" class="cyan-text">Login</router-link></li>
-            <li v-if="!isLoggedIn"><router-link to="/register" class="cyan-text">Register</router-link></li>
+            <li v-if="isLoggedIn"><router-link to="/dashboard" >Dashboard</router-link></li>
+            <li v-if="!isLoggedIn"><router-link to="/login" class="yellow-text">Login</router-link></li>
+            <li v-if="!isLoggedIn"><router-link to="/register" class="yellow-text">Register</router-link></li>
              <li v-if="isLoggedIn"><button v-on:click="logout" class="btn black">Logout</button></li>
           </ul>
         </div>
@@ -48,9 +48,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.nav-wrapper  {
-  background-color: $lol;
-}
+
 .email {
   padding-right: 10px;
 }
